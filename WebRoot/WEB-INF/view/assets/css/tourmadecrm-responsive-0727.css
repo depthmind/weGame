@@ -1,0 +1,110 @@
+@media screen and (max-width: 1023px) {
+	section .mainpanel{
+		margin-left: 0;
+	}
+	.signinpanel {
+		width: 100%;
+	}
+	.signin-topbar{
+		height: 140px;
+	}
+	.signinpanel .left{
+		display: none;
+	}
+	.signinpanel .right{
+		float: none;
+		margin: 0 auto 30px;
+		max-width: 100%;
+	}
+	.signinpanel form{
+		padding: 0;
+		margin: 0;
+	}
+	.signin-topbar .bottom {
+	    background: rgba(0, 0, 0, 0) url("../images/v2/kfzs.jpg") no-repeat scroll -252px top / 1200px auto;
+	    height: 70px;
+	}
+	section .mainpanel{
+		padding-left: 0;
+		position: relative;
+	}
+	.headerbar{
+		position: absolute;
+		z-index: 9;
+		background: none;
+	}
+	.menutoggle{
+		border-right: none;
+		color: #fff;
+	}
+	.pageheader{
+		padding: 14px 30px 13px 66px;
+	}
+	.case-filter-name, 
+	.case-filter-id, 
+	.case-filter-mobile, 
+	.case-filter-operator, 
+	.case-filter-alertlevel{
+		width: 100%;
+	}
+	.case-filter-destination, 
+	.case-filter-source{
+		width: 100%;
+	}
+	.case-filter-destinations{
+		width: 100%;
+	}
+	.case-filter-starttime, 
+	.case-filter-endtime{
+		width: 100%;
+		margin-bottom: 5px;
+	}
+	.leftpanel-show .mainpanel{
+		margin-left: 160px;
+	}
+	#searchBtn{
+		width: 100% !important;
+	}
+	.case-filter .rdio{
+		width: 33.33%;
+		margin-top: 2px;
+	}
+	.case-filter .rdio label{
+		width: 100%;
+		padding: 10px 0;
+		text-align: center;
+		font-size: 12px;
+	}
+	.section-title{
+		margin-bottom: 20px;
+		padding: 0 10px;
+	}
+	.section-title span:first-child{
+		display: block;
+		width: 100%;
+		margin-bottom: 5px;
+		font-size: 18px;
+	}
+	#form-case .section-block,
+	#form .section-block{
+		padding: 0;
+	}
+	#searchSave{
+		width: 100% !important;
+		margin: 5px 0 0;
+	}
+	.uploadcus{
+		width: 62px;
+	}
+	.uploadcus span{
+		width: 60px !important;
+	}
+	.addnewdestination{
+		float: none !important;
+	}
+	.addnewdestination a{
+		display: block;
+		width: 100%;
+		margin-top: 5px;
+	}
+}

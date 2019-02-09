@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tourmade.crm.mapper.parameter.ParameterMapper">
+
+	<select id="queryParameter" parameterType="map" resultType="com.tourmade.crm.entity.Parameter">
+		select
+			para_id as parameterId,
+			para_domain as domain,
+			para_value as value,
+			chinese as chinese,
+			english as english,
+			para_sort as sort,
+			para_desc as depict,
+			isdisplay as isdisplay,
+			creat_time as creatTime,
+			isdel as isdel
+		from parameter  
+		where isdel = 0
+		<if test="pdomain != null and pdomain != ''">
+                and   para_domain like '%${pdomain}%' 
+        </if>
+        <if test="pvalue != null and pvalue != ''">
+                and   para_value like '%${pvalue}%' 
+        </if>
+        <if test="chinese != null and chinese != ''">
+                and   chinese like '%${chinese}%' 
+        </if>
+        <if test="english != null and english != ''">
+                and   english like '%${english}%' 
+        </if>
+		order by creat_time
+		limit #{start},#{length}
+	</select>
+
+	<select id="countParameter" parameterType="Parameter" resultType="long">
+		select count(u.para_id) from parameter u
+		where
+		u.isdel = 0
+		<if test="domain != null and domain != ''">
+                and   para_domain like '%${domain}%' 
+        </if>
+        <if test="value != null and value != ''">
+                and   para_value like '%${value}%' 
+        </if>
+        <if test="chinese != null and chinese != ''">
+                and   chinese like '%${chinese}%' 
+        </if>
+        <if test="english != null and english != ''">
+                and   english like '%${english}%' 
+        </if>
+
+	</select>
+	
+	<insert id="saveParameter" parameterType="Parameter" flushCache="true" useGeneratedKeys="true" keyProperty="parameterId" keyColumn="GENERATED_KEY">
+		insert into parameter(
+		para_domain,
+		para_value,
+		chinese,
+		english,
+		para_desc,
+		para_sort,
+		isdisplay,
+		creat_time,
+		update_time,
+		isdel
+		)values(
+		#{domain,jdbcType=VARCHAR},
+		#{value,jdbcType=VARCHAR},
+		#{chinese,jdbcType=VARCHAR},
+		#{english,jdbcType=VARCHAR},
+		#{depict,jdbcType=VARCHAR},
+		#{sort,jdbcType=VARCHAR},
+		#{isdisplay,jdbcType=VARCHAR},
+		NOW(),
+		NOW(),
+		0
+		)
+	</insert>
+
+	<update id="updateParameter" parameterType="Parameter" flushCache="true">
+		update parameter
+		set
+		para_domain=#{domain},
+		para_value=#{value},
+		chinese=#{chinese},
+		english=#{english},
+		para_desc=#{depict},
+		para_sort=#{sort},
+		isdisplay=#{isdisplay},
+		update_time=NOW()
+		where
+		para_id=#{parameterId}
+	</update>
+	
+	<select id="getParameterById" parameterType="int" resultType="Parameter">
+		select
+		u.para_id as parameterId,
+		u.para_domain as domain,
+		u.para_value as value,
+		u.chinese as chinese,
+		u.english as english,
+		u.para_desc as depict,
+		u.para_sort as sort,
+		u.isdisplay as isdisplay,
+		u.isdel as isdel
+		from parameter u where u.para_id = #{parameterId}
+	</select>
+	
+	<update id="deleteParameterById" parameterType="int" flushCache="true"
+		statementType="PREPARED">
+		update parameter
+		set
+		isdel=1,update_time=NOW()
+		where
+		para_id = #{parameterId}
+	</update>
+
+    <select id="selectParaByValue" parameterType="String" resultType="Parameter">
+		select para_id as parameterId, 
+		para_domain as domain,
+		para_value as value,
+		chinese as chinese,
+		english as english,
+		para_desc as depict,
+		para_sort as sort,
+		isdisplay as isdisplay,
+		creat_time as creatTime,
+		update_time as updateTime
+		from parameter 
+		where para_value = #{paraValue}
+		and isdel = 0
+	</select>
+	
+    <select id="selectAllActivityName" resultType="EntityList">
+		select DISTINCT
+		u.event_id as id,
+		u.event_content as text,
+		u.isdel
+		from events u
+		where u.isdel=0
+	</select>
+	
+	  <select id="selectAllDestinationName" resultType="EntityList">
+		select DISTINCT
+		d.destination_code as id,
+		d.destination_name as text,
+		d.isdel
+		from destination d
+	</select>
+	
+	  <select id="selectAllAreaCode" resultType="EntityList">
+		select DISTINCT
+		d.area_code as id,
+		d.destination_name as text,
+		d.isdel
+		from destination d
+	</select>
+	
+	<select id="selectParameterByParaDomain" parameterType="String" resultType="Parameter">
+		select t.chinese, t.para_value as value 
+		from parameter t 
+		where t.para_domain = #{domain} 
+		ORDER BY t.chinese desc
+	</select>
+	
+	<select id="selectParaValue" resultType="String">
+		select t.para_value
+		from parameter t 
+		where t.chinese = #{chinese} 
+		and t.para_domain = #{domain}
+	</select>
+	
+	<select id="selectParaValueById" resultType="String">
+		SELECT
+			p.para_value as enterpriseName
+		FROM
+			enterprise e
+		RIGHT  JOIN parameter p ON e.enterprise_name = p.chinese
+		WHERE
+			e.enterprise_id = #{enterpriseId}
+		and p.para_domain = #{domain}
+	</select>
+</mapper>

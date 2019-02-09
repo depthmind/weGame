@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="GBK" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tourmade.crm.mapper.playerRecharge.PlayerRechargeMapper">
+
+	<select id="selectPlayerRechargeByAgencyId" resultType="PlayerRecharge" parameterType="Map">
+		select recharge_id as rechargeId,player_id as playerId,player_name as playerName,
+		player_account as playerAccount,amount as amount,payment_method as paymentMethod,
+		agency_id as agencyId,create_time as createTime,update_time as updateTime,is_del as isDel
+		from player_recharge
+		where agency_id = #{agencyId}
+		limit #{start},#{length}
+	</select>
+	
+	<select id="countPlayerRechargeByAgencyId" resultType="long">
+		select count(recharge_id) from player_recharge where agency_id = #{agencyId}
+	</select>
+	
+	<!-- countAmountByAgencyId需要增加agencyId作为条件 -->
+	<select id="countAmountByAgencyId" parameterType="String" resultType="float">
+		select sum(amount) from player_recharge
+	</select>
+	
+	<!-- 管理员统计所有业绩 -->
+	<select id="countAmount" parameterType="String" resultType="float">
+		select sum(amount) from player_recharge
+	</select>
+	
+	<!-- 查询代理的下级的业绩 -->
+	<select id="selectAgencyPlayerRechargeByAgencyId" resultType="PlayerRecharge" parameterType="Map">
+		select pr.recharge_id as rechargeId,pr.player_id as playerId,pr.player_name as playerName,
+		pr.player_account as playerAccount,pr.amount as amount,pr.payment_method as paymentMethod,
+		pr.agency_id as agencyId,pr.create_time as createTime,pr.update_time as updateTime,pr.is_del as isDel
+		from player_recharge pr
+		where pr.agency_id in (select u.user_id from user u where agency = #{agencyId})
+		limit #{start},#{length}
+	</select>
+	
+	<select id="countAgencyPlayerRechargeByAgencyId" resultType="long">
+		select count(recharge_id)
+		from player_recharge
+		where pr.agency_id in (select u.user_id from user u where agency = #{agencyId})
+		limit #{start},#{length}
+	</select>
+	
+	<select id="countAgencyAmountByAgencyId" parameterType="String" resultType="float">
+		select sum(amount) 
+		from player_recharge
+		where pr.agency_id in (select u.user_id from user u where agency = #{agencyId})
+		limit #{start},#{length}
+	</select>
+</mapper>
+
+
+
+
+
+
+
+

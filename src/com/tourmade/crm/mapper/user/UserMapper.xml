@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="GBK" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tourmade.crm.mapper.user.UserMapper">
+
+	<select id="queryUser" parameterType="Map" resultType="User">
+		select
+			u.user_id as userId,
+			u.user_name as loginName,
+			u.loginname as name,
+			u.password as pwd,
+			u.has_pay as hasPay,
+			u.user_email as email,
+			u.mobilephone as mobilephone,
+			u.creat_time as creatTime,
+			u.isdel as isdel,
+			u.role_id as role_id,
+			u.service_type as serviceType,
+			u.invalid as invalid,
+			u.invalid_date as invalidDate
+		from user u
+		where u.isdel = 0
+		order by u.creat_time desc
+		limit #{start},#{length}
+	</select>
+
+	<select id="queryUserAmount" parameterType="Map" resultType="User">
+		select
+			u.user_id as userId,
+			sum(pr.amount) as amount,
+			u.user_name as loginName,
+			u.loginname as name,
+			u.password as pwd,
+			u.has_pay as hasPay,
+			u.user_email as email,
+			u.mobilephone as mobilephone,
+			u.creat_time as creatTime,
+			u.isdel as isdel,
+			u.role_id as role_id,
+			u.service_type as serviceType
+		from user u left join player_recharge pr
+        on u.user_id = pr.agency_id
+		where u.isdel = 0
+		group by u.user_id
+		order by amount desc
+		limit #{start},#{length}
+	</select>
+	
+	<select id="queryUserAll" resultType="EntityList">
+		SELECT
+			user_id as id,
+			user_name as text
+		FROM
+			user
+		WHERE
+			isdel = 0
+	</select>
+
+	<select id="permissionCheckUrl" parameterType="String" resultType="String">
+		select url as url from menu where menu_id in (
+			select menu_id from role_x_menu where role_id=(				
+				select 
+				role_id 
+				from user 
+				where loginname=#{username}
+			)
+		)
+	</select>
+	
+	<select id="permissionCheckRole" parameterType="String" resultType="String">
+		select role_id from user where loginname=#{username}
+	</select>
+	
+	<select id="checkButtonIdExist" parameterType="String" resultType="String">
+		select menu_id as menuId from role_x_menu where role_id=#{1} and menu_id=#{0}
+	</select>
+	
+	<select id="checkButtonId" parameterType="String" resultType="String">
+		select 
+			menu_id as menuId
+		from menu 
+		where menu_name=#{menuName}
+	</select>
+
+	<select id="countUser" parameterType="User" resultType="long">
+		select count(u.user_id) from user u
+		where
+		u.isdel = 0
+	</select>
+
+	<insert id="saveUser" parameterType="User" flushCache="true" useGeneratedKeys="true" keyProperty="userId" keyColumn="GENERATED_KEY">
+		insert into user(
+		user_name,
+		loginname,
+		password,
+		has_pay,
+		user_email,
+		mobilephone,
+		creat_time,
+		update_time,
+		role_id,
+		isdel,
+		service_type,
+		agency,
+		recharge_link,
+		register_link
+		)values(
+		#{name,jdbcType=VARCHAR},
+		#{loginName,jdbcType=VARCHAR},
+		#{pwd,jdbcType=VARCHAR},
+		#{hasPay,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR},
+		#{mobilephone,jdbcType=VARCHAR},
+		NOW(),
+		NOW(),
+		#{role_id},
+		0,
+		#{serviceType},
+		#{agency},
+		#{rechargeLink},
+		#{registerLink}
+		)
+	</insert>
+
+	<update id="updateUser" parameterType="User" flushCache="true">
+		update user
+		<set>
+			<if test="loginName != null">loginname=#{loginName},</if>
+			<if test="name != null">user_name=#{name},</if>
+			<if test="email != null">user_email=#{email},	</if>
+			<if test="pwd != null and pwd !=''">password=#{pwd},</if>
+			<if test="mobilephone != null">mobilephone=#{mobilephone},</if>
+			<if test="role_id != null">role_id=#{role_id},</if>
+			<if test="serviceType != null">service_type=#{serviceType},</if>
+			<if test="invalid != null">
+				invalid = #{invalid},
+			</if>
+			<if test="agency != null and agency != ''">
+				agency=#{agency},
+			</if>
+			<if test="registerLink != null and registerLink != ''">
+				register_link = #{registerLink},
+			</if>
+			<if test="rechargeLink != null and rechargeLink != ''">
+				recharge_link = #{rechargeLink},
+			</if>
+			<if test="invalidDate != null and invalidDate != ''">
+				invalid_date = #{invalidDate},
+			</if>
+			update_time=NOW()
+		</set>
+		where
+		user_id=#{userId}
+	</update>
+
+	<select id="getUserById" parameterType="int" resultType="User">
+		select
+		u.user_id as userId,
+		u.loginname as loginName,
+		u.password as pwd,
+		u.has_pay hasPay,
+		u.user_name as name,
+		u.user_email as email,
+		u.mobilephone as mobilephone,
+		u.creat_time as creatTime,
+		u.role_id as role_id,
+		u.wx_open_id as openId,
+		u.avator as avator,
+		u.headimgurl as headImgUrl,
+		u.isdel as isdel,
+		u.invalid as invalid,
+		u.invalid_date as invalidDate,
+		u.service_type as serviceType
+		from user u where u.isdel = 0 and u.user_id = #{userId}
+	</select>
+
+	<update id="deleteUserById" parameterType="int" flushCache="true"
+		statementType="PREPARED">
+		update user
+		set
+		isdel=1,update_time=NOW()
+		where
+		user_id = #{userId}
+	</update>
+
+	<select id="signin" parameterType="User" resultType="User">
+		select
+		u.user_id as userId,
+		u.role_id as role_id,
+		u.loginname as loginName,
+		u.user_name as name,
+		u.mobilephone as mobilephone,
+		u.user_email as email,
+		u.wx_open_id as openId,
+		u.wx_union_id as unionId,
+		u.password as pwd,
+		u.has_pay hasPay,
+		u.im_id as imId,
+		u.im_pwd as imPwd,
+		u.register_link as registerLink,
+		u.recharge_link as rechargeLink,
+		u.isdel as isdel
+		from user u where
+		u.loginname = #{loginName} and u.password = #{pwd} and u.isdel = 0
+	</select>
+	
+	<select id="validate" resultType="String">
+		select  ${field} from ${table} u
+		where u.${field} = #{name} 
+		<if test="filter_field != null and filter_field != ''">
+			and
+			u.${filter_field} = #{filter_name} 
+		</if>
+		and u.isdel = 0
+		limit 1
+	</select>
+	
+	<select id="getParameterInfo" parameterType="String" resultType="EntityList">
+		select
+		u.para_domain,
+		u.para_value as id,
+		u.chinese as text,
+		u.isdisplay,
+		u.isdel 
+		from parameter u where  u.isdel = 0 and u.para_domain = #{domain}
+		ORDER BY u.para_sort desc, u.para_value
+	</select>
+	
+	<select id="getUserRoles" resultType="EntityList">
+		select role_id as id, role_name as text from role WHERE isdel=0
+	</select>
+	
+	<select id="getRoleNameById" parameterType="int" resultType="String">
+		select 
+			r.role_name 
+		from user u left join role r on u.role_id=r.role_id 
+		where u.user_id=#{userId} 
+		and u.isdel=0
+		GROUP BY r.role_name
+	</select>
+	<select id="getMenuId" parameterType="String" resultType="String">
+		select 
+			menu_id as menuID
+		from role_x_menu where role_id=#{role_id}
+		
+	</select>
+	
+	<select id="getUrlByMenuName" parameterType="String" resultType="String">
+		select 
+			url as url
+		from menu where menu_name=#{menuName}
+		and isdel = 0
+	</select>
+	
+	<select id="getMenuNameByMenuId" parameterType="String" resultType="String">
+		select 
+			menu_name as menuName
+		from menu where menu_id=#{menuId}
+	</select>
+	
+	<select id="getUserByRoleId" parameterType="int" resultType="User">
+		select
+			u.user_id as userId,
+			u.user_name as loginName,
+			u.loginname as name,
+			u.password as pwd,
+			u.user_email as email,
+			u.mobilephone as mobilephone,
+			u.creat_time as creatTime,
+			u.isdel as isdel
+		from user u where u.isdel = 0
+		and role_id=#{role_id}
+		order by u.creat_time desc
+	</select>
+	
+	
+	<select id ="countBeTransferredCustomer" parameterType="Map" resultType = "int">
+	   select count(*) 
+        from customer
+        where
+        exclusive_user = ${userId} 
+        <if test="previousOperator!=null and previousOperator!=''">
+	       and previous_exclusive_user = ${previousOperator}
+	    </if>
+	</select>
+	
+	<select id="selectUserByOpenId" parameterType="String" resultType="User">
+		select
+			u.user_id as userId,
+			u.user_name as name,
+			u.loginname as loginName,
+			u.password as pwd,
+			u.user_email as email,
+			u.mobilephone as mobilephone,
+			u.creat_time as creatTime,
+			u.isdel as isdel,
+			u.role_id as role_id,
+			u.service_type as serviceType
+		from user u where u.isdel = 0
+		and u.wx_open_id = #{openId}
+	</select>
+	
+	<select id="selectUserByUnionId" parameterType="String" resultType="User">
+		select
+			u.user_id as userId,
+			u.user_name as name,
+			u.loginname as loginName,
+			u.password as pwd,
+			u.user_email as email,
+			u.mobilephone as mobilephone,
+			u.creat_time as creatTime,
+			u.isdel as isdel,
+			u.role_id as role_id,
+			u.service_type as serviceType
+		from user u where u.isdel = 0
+		and u.wx_union_id = #{unionId}
+	</select>
+	
+	<!-- <update id="updateUserByOpenId" parameterType="java.util.List">
+		<foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+                update user   
+                <set>  
+                  wx_union_id = #{item.unionId}
+                </set>  
+                where wx_open_id = #{item.openId}
+                and isdel = 0  
+         </foreach>  
+	</update> -->
+	<update id="updateUserByOpenId" parameterType="User">
+		update user
+		set wx_union_id = #{unionId}
+		where wx_open_id = #{openId}
+		and isdel = 0  
+	</update>
+	
+	<select id="getAllUserToUpdateUnionId" resultType="User">
+		select
+			u.user_id as userId,
+			u.user_name as userName,
+			u.loginname as loginName,
+			u.wx_open_id as openId,
+			u.password as pwd,
+			u.user_email as email,
+			u.mobilephone as mobilephone,
+			u.creat_time as creatTime,
+			u.isdel as isdel
+		from user u where u.isdel = 0
+	</select>
+	
+	<update id="updateUserByUserId" parameterType="Map" flushCache="true">
+		update user set 
+		wx_union_id = #{unionId},
+		wx_open_id = #{openId},
+        update_time = now()
+		where user_id = #{userId}
+		and isdel = 0
+	</update>
+</mapper>
+
+
+
+
+
+
+
+

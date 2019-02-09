@@ -1,0 +1,146 @@
+body{
+  margin: 0;
+  padding: 0;
+}
+.page-order {
+  background: #fff; }
+  .page-order .page-title {
+    color: #f1934b;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 15px; }
+
+#m-1027-order-query-form .form-item-order-code {
+  width: 100%;
+  margin: 40px auto;
+  text-align: center; }
+  #m-1027-order-query-form .form-item-order-code input {
+    border: 1px solid #bdbdbd;
+    padding: 0 8px;
+    width: 80%;
+    height: 30px; }
+#m-1027-order-query-form #edit-submit {
+  background: #2cca90;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  margin: 30px auto;
+  display: block;
+  border-radius: 30px;
+  font-size: 16px;
+  width: 120px;
+  line-height: 1.4; }
+
+.page-user-ticket {
+  background: #f3f3f5;
+  overflow-x: hidden; }
+
+.page-order-query .container {
+  padding: 0; }
+.page-order-query .row {
+  margin: 0; }
+
+.payment-check {
+  background: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 3px #dedede;
+  padding: 15px;
+  margin: 10px; }
+  .payment-check .order-details {
+    overflow: hidden; }
+  .payment-check .details-header {
+    padding: 10px;
+    overflow: hidden; }
+    .payment-check .details-header .order-no {
+      float: left; }
+    .payment-check .details-header .destination {
+      float: right; }
+  .payment-check .details-field {
+    padding: 5px 10px;
+    border-bottom: 1px solid #dedede; }
+  .payment-check label {
+    margin-bottom: 0;
+    margin-right: 5px;
+    font-weight: normal; }
+  .payment-check .top {
+    padding: 0 15px; }
+  .payment-check .bottom {
+    clear: both;
+    padding: 5px 0;
+    overflow: hidden; }
+    .payment-check .bottom .amount {
+      font-size: 16px; }
+      .payment-check .bottom .amount .tips {
+        font-size: 14px;
+        font-weight: normal; }
+      .payment-check .bottom .amount input {
+        width: 168px; }
+    .payment-check .bottom .btn-payment-done {
+      padding: 6px;
+      border-radius: 30px;
+      background: #acacac;
+      color: #fff;
+      margin-top: 8px;
+      text-align: center; }
+    .payment-check .bottom .btn-payment {
+      padding: 6px;
+      border-radius: 30px;
+      background: #2cca90;
+      color: #fff;
+      margin-top: 8px;
+      display: block;
+      text-decoration: none;
+      width: 120px;
+      margin: 20px auto 0;
+      text-align: center;
+      border: none;
+      clear: both;
+      font-size: 14px;
+      letter-spacing: 0.2px; }
+    .payment-check .bottom .alipay {
+      background: url(../images/alipay.jpg) no-repeat;
+      width: 126px;
+      height: 35px;
+      background-size: auto 100%;
+      background-position: 20px 0;
+      display: block;
+      margin-right: 30px;
+      cursor: pointer;
+      float: left;
+      margin-right: 6px;
+      margin-bottom: 30px; }
+    .payment-check .bottom .wechatpay {
+      background: url(../images/wechat.jpg) no-repeat;
+      width: 135px;
+      margin-right: 0;
+      height: 35px;
+      background-size: auto 100%;
+      background-position: 20px 0;
+      display: block;
+      cursor: pointer;
+      float: left;
+      margin-bottom: 30px; }
+
+.page-user-ticket .content-box {
+  padding-top: 20px;
+  margin-top: 10px; }
+.page-user-ticket .top {
+  padding: 10px 15px;
+  border-bottom: 1px solid #bdbdbd;
+  font-size: 18px;
+  color: #333;
+  font-weight: bold; }
+.page-user-ticket .back {
+  float: left;
+  font-size: 16px;
+  font-weight: normal; }
+
+.order-list-wrap {
+  background: #f3f3f5; }
+  .order-list-wrap .case-list-item {
+    overflow: hidden;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    background: #fff; }
+
+/*# sourceMappingURL=user.css.map */
